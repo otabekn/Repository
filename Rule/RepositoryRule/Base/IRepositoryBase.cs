@@ -6,7 +6,7 @@ using RepositoryRule.Entity;
 
 namespace RepositoryRule.Base
 {
-    interface IRepositoryBase<T, TKey>
+  public  interface IRepositoryBase<T, TKey>
         where T:class, IEntity<TKey>
     {
         #region Sync Operations
@@ -22,8 +22,8 @@ namespace RepositoryRule.Base
         Task AddAsync(T model);
         Task UpdateAsync(T model);
         Task DelateAsync(T model);
-
         #endregion
+        
 
     }
 }

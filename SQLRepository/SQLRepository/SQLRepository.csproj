@@ -10,4 +10,8 @@
     <PackageReference Include="STAN.Client" Version="0.1.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Rule\RepositoryRule\RepositoryRule.csproj" />
+  </ItemGroup>
+
 </Project>
