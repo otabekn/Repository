@@ -21,7 +21,7 @@ namespace RepositoryRule.Base
         void Add(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
         void AddRange(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
         Task AddAsync(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
-        Task AddRangeAsync(List<T> models,[CallerLineNumber]
+        Task AddRangeAsync(List<T> models, [CallerLineNumber]int lineNumber=0, [CallerMemberName] string caller=null);
         #endregion
 
         #region Update
