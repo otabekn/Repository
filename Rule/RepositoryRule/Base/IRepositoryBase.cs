@@ -44,7 +44,8 @@ namespace RepositoryRule.Base
         #endregion
 
         #region Count
-        long Count(Expression<Func<T, bool>> expression);
+        long Count([CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
+        long Count(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
         long Count(string field, string value);
         #endregion
         #region
