@@ -1,24 +1,27 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using RepositoryRule.CacheRepository;
+using RepositoryRule.Entity;
+using RepositoryRule.LoggerRepository;
+using SQLRepository.Context;
+using SQLRepository.EntityRepository;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using RepositoryRule.CacheRepository;
-using RepositoryRule.Entity;
-using RepositoryRule.LoggerRepository;
-using SQLRepository.Context;
-using SQLRepository.EntityRepository;
 using Z.EntityFramework.Plus;
 
 namespace SQLRepository
 {
+
+    
     //change
-public partial class SqlRepository<T>: IEntityRepository<T>
+    public partial class SqlRepository<T>: IEntityRepository<T>
         where T:class, IEntity<int>
     {
+        #region Head
         ILoggerRepository _logger;
         IChacheRepository<T> _cache;
         protected DbContext _db;
@@ -42,7 +45,7 @@ public partial class SqlRepository<T>: IEntityRepository<T>
         {
             _cache = cache;
         }
-
+        #endregion
 
         #region Create
         public void Add(T model, [CallerLineNumber]int lineNumber = 0, [CallerMemberName] string caller = null)
@@ -60,9 +63,12 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             {
                 _cache?.CatcheDelete("Add Exeptions",model.Id.ToString(), model);
                 watch.Stop();
-                _logger?.CatchError("Add Error",watch.ElapsedMilliseconds,model, ext, caller, lineNumber);
+                ErrorLogging("Add Error", watch.ElapsedMilliseconds, model, ext, caller, lineNumber);
             }                        
         }
+
+       
+
         public async Task AddAsync(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
@@ -76,7 +82,8 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
-
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, model, ext, caller, lineNumber);
             }
         }
         public void AddRange(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
@@ -92,7 +99,8 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
-
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, models, ext, caller, lineNumber);
             }
         }
 
@@ -110,7 +118,8 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
-
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, models, ext, caller, lineNumber);
             }
             return Task.CompletedTask;
         }
@@ -141,6 +150,8 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, id, ext, caller, lineNumber);
                 return null;
             }
         }
@@ -164,6 +175,8 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch(Exception ext)
             {
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, id, ext, caller, lineNumber);
                 return null;
             }
             
@@ -185,7 +198,8 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
-             
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, model, ext, caller, lineNumber);
             }
         }
         public async Task UpdateAsync(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
@@ -202,11 +216,81 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, model, ext, caller, lineNumber);
                 //return null;
             }
         }
         #endregion
 
+       public void UpdateMany(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                _dbSet.UpdateRange(models);
+                watch.Stop();
+                Logging("UpdateMany", watch.ElapsedMilliseconds, lineNumber, caller, models);
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+              
+            }
+        }
+       public Task UpdateManyAsync(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                _dbSet.UpdateRange(models);
+                Logging("UpdateManyAsync", watch.ElapsedMilliseconds, lineNumber, caller, models);
+                return Task.CompletedTask;
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                return Task.CompletedTask ;
+            }
+        }
+       public void Update(Expression<Func<T, T>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                _dbSet.Update(selector);
+                watch.Stop();
+                Logging("UpdateManyAsync", watch.ElapsedMilliseconds, lineNumber, caller, selector);
+                
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                
+            }
+        }
+       public Task UpdateAsync(Expression<Func<T, T>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                _dbSet.Update(selector);
+                watch.Stop();
+                Logging("UpdateAsync", watch.ElapsedMilliseconds,lineNumber, caller, selector);
+                return Task.CompletedTask;
+
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+
+                return Task.CompletedTask;
+            }
+        }
         #region Delate
         public void Delate(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
@@ -221,7 +305,8 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
-                
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, model, ext, caller, lineNumber);
             }
         }
         public async Task DelateAsync(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
@@ -239,26 +324,46 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
-                
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, model, ext, caller, lineNumber);
             }
            
         }
         #endregion
-
-        #region Find
-        public IEnumerable<T> Find(Expression<Func<T, bool>> keySelector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        public async Task DeleteManyAsync(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
             try
             {
                 watch.Start();
-                var result= _dbSet.Where(keySelector);
+                await _dbSet.Where(selector).DeleteAsync();
+                watch.Stop();
+                Logging("DeleteManyAsync", watch.ElapsedMilliseconds, lineNumber, caller, selector);
+
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, selector, ext, caller, lineNumber);
+            }
+        }
+
+        #region Find
+        public IEnumerable<T> Find(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                var result= _dbSet.Where(selector);
                 watch.Stop();
                 return result; 
 
             }
             catch(Exception ext)
             {
+                watch.Stop();
+                ErrorLogging("Find", watch.ElapsedMilliseconds, selector, ext, caller, lineNumber);
                 return null;
             }
             
@@ -277,25 +382,68 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, expression, ext, caller, lineNumber);
                 return null;
             }
         }
+        public IEnumerable<T> FindReverse(Expression<Func<T,bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                var result = _dbSet.Where(selector).Reverse();
+                watch.Stop();
+                Logging();
+                return result;
 
+            }
+            catch(Exception ext)
+            {
+                watch.Stop();
+                ErrorLogging("FindReverse", watch.ElapsedMilliseconds, selector, ext, caller, lineNumber);
+                return null;
+            }
+        }
+        public IEnumerable<T> Find(Expression<Func<T, bool>> selector, int offset, int limit)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                var result=_dbSet.Where(selector).SkipLast(offset).TakeLast(limit);
+                watch.Stop();
+                Logging("");
+                return result;
+            }
+            catch(Exception ext)
+            {
+                watch.Stop();
+                ErrorLogging();
+                return null;
+            }
+        }
         public IEnumerable<T> Find(Expression<Func<T, bool>> selector, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
             try
             {
                 watch.Start();
-                var result=_dbSet.Where(selector);
+                var result=_dbSet.Where(selector).Skip(offset).Take(limit);
+
                 watch.Stop();
+                Logging();
                 return result;
             }
             catch (Exception ext)
             {
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, selector, ext, caller, lineNumber);
                 return null;
             }
         }
+
         //change
         public IEnumerable<T> Find(string field, string value, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
@@ -311,6 +459,8 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, field + ":" + value, ext, caller, lineNumber);
                 return null;
             }
         }
@@ -329,6 +479,8 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, field+":"+value, ext, caller, lineNumber);
                 return null;
             }
         }
@@ -345,7 +497,8 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
-              
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, expression, ext, caller, lineNumber);
             }
         }
         public long Count([CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
@@ -361,6 +514,8 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch(Exception ext)
             {
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, null, ext, caller, lineNumber);
                 return 0;
             }
         }
@@ -371,18 +526,19 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             {
                 watch.Start();
                 var result=_dbSet.Count(expression);
-
                 watch.Stop();
                 Logging("Count", watch.ElapsedMilliseconds, lineNumber, caller, expression) ;
                 return result;
             }
             catch (Exception ext)
             {
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, null, ext, caller, lineNumber);
                 return 0;
             }
         }
 
-        public long Count(string field, string value)
+        public long Count(string field, string value, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
             try
@@ -397,21 +553,164 @@ public partial class SqlRepository<T>: IEntityRepository<T>
             }
             catch (Exception ext)
             {
+                watch.Stop();
+                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, null, ext, caller, lineNumber);
                 return 0;
             }
         }
-
-         #endregion
+        #endregion
         #region Loggin
         
         public void Logging(string text, long msec, int lineNumber, string caller, object model )
         {
             _logger?.FinalyLog(text, msec,model, caller, lineNumber);
-        }   
-        public void ErrorLogging()
+        }
+        private void ErrorLogging(string v, long msec, T model, Exception ext, string caller, int lineNumber)
+        {
+            
+        }
+        private void ErrorLogging(string v, long msec, object model, Exception ext, string caller, int lineNumber)
         {
 
         }
         #endregion
+
+       
+
+       
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> keySelector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                var result =_dbSet.Where(keySelector);
+
+                return result;
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                return null;
+            }
+        }
+
+        public Task<T> FindFirstAsync(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                var result = _dbSet.FirstOrDefaultAsync(expression);
+
+
+                return result;
+
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> selector, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                var result = _dbSet.Where(selector);
+                watch.Stop();
+                return result;
+
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                return null;
+            }
+        }
+
+        public Task<IEnumerable<T>> FindAsync(string field, string value, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+            
+
+                return null;
+
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                return null;
+            }
+        }
+
+        public Task<IEnumerable<T>> FindAsync(string field, string value, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                
+
+                return null;
+
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                return null;
+            }
+        }
+        #region Procedure change
+
+
+        public T CalProcedure(string functinname, object[] item, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+               var result= _dbSet.FromSql(functinname, item);
+                watch.Stop();
+                //change
+                Logging("CallProcedure", watch.ElapsedMilliseconds,lineNumber, caller, null);
+                return result.FirstOrDefault() ;
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+
+                return null;
+            }
+        }
+
+        public IEnumerable<T> CallProcedure(string str)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+
+                var result=_dbSet.FromSql(str);
+
+                watch.Stop();
+                return result;
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                return null;
+            }
+        }
+
+       
+        #endregion
+
     }
 }
