@@ -20,6 +20,7 @@ namespace MongoRepository
         IMongoCollection<T> _data;
         protected IMongoDatabase _db;
         ILoggerRepository _logger;
+
         string name;
         public MongoRepository(IMongoContext database)
         {
@@ -149,7 +150,97 @@ namespace MongoRepository
             var document = new BsonDocument(field, value);
             return _data.Count(filter: document);
         }
+
+        public void AddRange(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddRangeAsync(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateMany(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateManyAsync(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(Expression<Func<T, T>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(Expression<Func<T, T>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteManyAsync(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> FindReverse(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> keySelector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> FindFirstAsync(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> selector, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> FindAsync(string field, string value, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> FindAsync(string field, string value, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long Count([CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long Count(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long Count(string field, string value, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T CalProcedure(string functinname, object[] item, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> CallProcedure(string str, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
-        
+
     }
 }

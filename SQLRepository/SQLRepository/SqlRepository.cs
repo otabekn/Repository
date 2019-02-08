@@ -46,7 +46,6 @@ namespace SQLRepository
             _cache = cache;
         }
         #endregion
-
         #region Create
         public void Add(T model, [CallerLineNumber]int lineNumber = 0, [CallerMemberName] string caller = null)
         {
@@ -126,7 +125,6 @@ namespace SQLRepository
 
         //public async T
         #endregion
-
         #region Read
         public async Task<T> GetAsync(int id, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
@@ -182,7 +180,6 @@ namespace SQLRepository
             
         }
         #endregion
-
         #region Update
         public void Update(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
@@ -221,9 +218,7 @@ namespace SQLRepository
                 //return null;
             }
         }
-        #endregion
-
-       public void UpdateMany(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        public void UpdateMany(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
             try
@@ -236,26 +231,28 @@ namespace SQLRepository
             catch (Exception ext)
             {
                 watch.Stop();
-              
+                ErrorLogging("UpdateMany", watch.ElapsedMilliseconds, models, ext, caller, lineNumber);
             }
         }
-       public Task UpdateManyAsync(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        public Task UpdateManyAsync(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
             try
             {
                 watch.Start();
                 _dbSet.UpdateRange(models);
+                watch.Stop();
                 Logging("UpdateManyAsync", watch.ElapsedMilliseconds, lineNumber, caller, models);
                 return Task.CompletedTask;
             }
             catch (Exception ext)
             {
                 watch.Stop();
-                return Task.CompletedTask ;
+                ErrorLogging("UpdateManyAsync", watch.ElapsedMilliseconds, models, ext, caller, lineNumber);
+                return Task.CompletedTask;
             }
         }
-       public void Update(Expression<Func<T, T>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        public void Update(Expression<Func<T, T>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
             try
@@ -264,15 +261,16 @@ namespace SQLRepository
                 _dbSet.Update(selector);
                 watch.Stop();
                 Logging("UpdateManyAsync", watch.ElapsedMilliseconds, lineNumber, caller, selector);
-                
+
             }
             catch (Exception ext)
             {
                 watch.Stop();
-                
+                ErrorLogging("Update", watch.ElapsedMilliseconds, selector, ext, caller, lineNumber);
+
             }
         }
-       public Task UpdateAsync(Expression<Func<T, T>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        public Task UpdateAsync(Expression<Func<T, T>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
             try
@@ -280,17 +278,19 @@ namespace SQLRepository
                 watch.Start();
                 _dbSet.Update(selector);
                 watch.Stop();
-                Logging("UpdateAsync", watch.ElapsedMilliseconds,lineNumber, caller, selector);
+                Logging("UpdateAsync", watch.ElapsedMilliseconds, lineNumber, caller, selector);
                 return Task.CompletedTask;
 
             }
             catch (Exception ext)
             {
                 watch.Stop();
-
+                ErrorLogging("UpdateAsync", watch.ElapsedMilliseconds, selector, ext, caller, lineNumber);
                 return Task.CompletedTask;
             }
         }
+
+        #endregion
         #region Delate
         public void Delate(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
@@ -329,7 +329,6 @@ namespace SQLRepository
             }
            
         }
-        #endregion
         public async Task DeleteManyAsync(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
@@ -348,6 +347,7 @@ namespace SQLRepository
             }
         }
 
+        #endregion
         #region Find
         public IEnumerable<T> Find(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
@@ -368,7 +368,6 @@ namespace SQLRepository
             }
             
         }
-
         public T FindFirst(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
@@ -395,7 +394,7 @@ namespace SQLRepository
                 watch.Start();
                 var result = _dbSet.Where(selector).Reverse();
                 watch.Stop();
-                Logging();
+                Logging("FindReverse", watch.ElapsedMilliseconds, lineNumber,caller, selector);
                 return result;
 
             }
@@ -406,7 +405,7 @@ namespace SQLRepository
                 return null;
             }
         }
-        public IEnumerable<T> Find(Expression<Func<T, bool>> selector, int offset, int limit)
+        public IEnumerable<T> Find(Expression<Func<T, bool>> selector, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
             try
@@ -414,36 +413,111 @@ namespace SQLRepository
                 watch.Start();
                 var result=_dbSet.Where(selector).SkipLast(offset).TakeLast(limit);
                 watch.Stop();
-                Logging("");
+                Logging("Find with limit:"+limit+"offset:"+offset, watch.ElapsedMilliseconds,  lineNumber, caller,selector);
                 return result;
             }
             catch(Exception ext)
             {
                 watch.Stop();
-                ErrorLogging();
+                ErrorLogging("Find with limit:" + limit + "offset:" + offset, watch.ElapsedMilliseconds, selector, ext, caller, lineNumber);
                 return null;
             }
         }
-        public IEnumerable<T> Find(Expression<Func<T, bool>> selector, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
             try
             {
                 watch.Start();
-                var result=_dbSet.Where(selector).Skip(offset).Take(limit);
-
+                var result = _dbSet.Where(selector);
                 watch.Stop();
-                Logging();
+                Logging("FindAsync", watch.ElapsedMilliseconds, lineNumber, caller, selector);
                 return result;
             }
             catch (Exception ext)
             {
                 watch.Stop();
-                ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, selector, ext, caller, lineNumber);
+                ErrorLogging("FindAsync", watch.ElapsedMilliseconds, selector, ext, caller, lineNumber);
                 return null;
             }
         }
+        public Task<T> FindFirstAsync(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                var result = _dbSet.FirstOrDefaultAsync(selector);
+                Logging("FindFirstAsync", watch.ElapsedMilliseconds, lineNumber, caller, selector);
+                return result;
 
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                ErrorLogging("FindFirstAsync", watch.ElapsedMilliseconds, selector, ext, caller, lineNumber);
+                return null;
+            }
+        }
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> selector, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                var result = _dbSet.Where(selector);
+                watch.Stop();
+                Logging("FindAsync", watch.ElapsedMilliseconds, lineNumber, caller, selector);
+                return result;
+
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                ErrorLogging("FindAsync", watch.ElapsedMilliseconds, selector, ext, caller, lineNumber);
+                return null;
+            }
+        }
+        public async Task<IEnumerable<T>> FindAsync(string field, string value, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                var props = typeof(T).GetProperty(field);
+                var result = _dbSet.Where(m => props.GetValue(m, null) == value);
+                watch.Stop();
+                Logging("FindAsync", watch.ElapsedMilliseconds, lineNumber, caller, field + ":" + value);
+                return result;
+
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                ErrorLogging("FindAsync", watch.ElapsedMilliseconds, field + ":" + value, ext, caller, lineNumber);
+                return null;
+            }
+        }
+        public async Task<IEnumerable<T>> FindAsync(string field, string value, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            Stopwatch watch = new Stopwatch();
+            try
+            {
+                watch.Start();
+                var props = typeof(T).GetProperty(field);
+                var result = _dbSet.Where(m => props.GetValue(m, null) == value);
+                watch.Stop();
+                Logging("FindAsync", watch.ElapsedMilliseconds, lineNumber, caller, field + ":" + value);
+                return result;
+
+            }
+            catch (Exception ext)
+            {
+                watch.Stop();
+                ErrorLogging("FindAsync", watch.ElapsedMilliseconds, field + ":" + value, ext, caller, lineNumber);
+                return null;
+            }
+        }
         //change
         public IEnumerable<T> Find(string field, string value, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
@@ -464,7 +538,6 @@ namespace SQLRepository
                 return null;
             }
         }
-
         public IEnumerable<T> Find(string field, string value, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
@@ -484,7 +557,6 @@ namespace SQLRepository
                 return null;
             }
         }
-
         public void DeleteMany(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
@@ -501,18 +573,20 @@ namespace SQLRepository
                 ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, expression, ext, caller, lineNumber);
             }
         }
+        #endregion
+        #region Count
         public long Count([CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
             try
             {
                 watch.Start();
-                var result=_dbSet.Count();
+                var result = _dbSet.Count();
                 watch.Stop();
                 Logging("Count", watch.ElapsedMilliseconds, lineNumber, caller, null);
                 return result;
             }
-            catch(Exception ext)
+            catch (Exception ext)
             {
                 watch.Stop();
                 ErrorLogging("AddAsync Error", watch.ElapsedMilliseconds, null, ext, caller, lineNumber);
@@ -525,9 +599,9 @@ namespace SQLRepository
             try
             {
                 watch.Start();
-                var result=_dbSet.Count(expression);
+                var result = _dbSet.Count(expression);
                 watch.Stop();
-                Logging("Count", watch.ElapsedMilliseconds, lineNumber, caller, expression) ;
+                Logging("Count", watch.ElapsedMilliseconds, lineNumber, caller, expression);
                 return result;
             }
             catch (Exception ext)
@@ -558,12 +632,12 @@ namespace SQLRepository
                 return 0;
             }
         }
-        #endregion
+        #endregion 
         #region Loggin
-        
+
         public void Logging(string text, long msec, int lineNumber, string caller, object model )
         {
-            _logger?.FinalyLog(text, msec,model, caller, lineNumber);
+            _logger?.Logging(text, msec,model, caller, lineNumber);
         }
         private void ErrorLogging(string v, long msec, T model, Exception ext, string caller, int lineNumber)
         {
@@ -574,102 +648,7 @@ namespace SQLRepository
 
         }
         #endregion
-
-       
-
-       
-        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> keySelector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
-        {
-            Stopwatch watch = new Stopwatch();
-            try
-            {
-                watch.Start();
-                var result =_dbSet.Where(keySelector);
-
-                return result;
-            }
-            catch (Exception ext)
-            {
-                watch.Stop();
-                return null;
-            }
-        }
-
-        public Task<T> FindFirstAsync(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
-        {
-            Stopwatch watch = new Stopwatch();
-            try
-            {
-                watch.Start();
-                var result = _dbSet.FirstOrDefaultAsync(expression);
-
-
-                return result;
-
-            }
-            catch (Exception ext)
-            {
-                watch.Stop();
-                return null;
-            }
-        }
-
-        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> selector, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
-        {
-            Stopwatch watch = new Stopwatch();
-            try
-            {
-                watch.Start();
-                var result = _dbSet.Where(selector);
-                watch.Stop();
-                return result;
-
-            }
-            catch (Exception ext)
-            {
-                watch.Stop();
-                return null;
-            }
-        }
-
-        public Task<IEnumerable<T>> FindAsync(string field, string value, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
-        {
-            Stopwatch watch = new Stopwatch();
-            try
-            {
-                watch.Start();
-            
-
-                return null;
-
-            }
-            catch (Exception ext)
-            {
-                watch.Stop();
-                return null;
-            }
-        }
-
-        public Task<IEnumerable<T>> FindAsync(string field, string value, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
-        {
-            Stopwatch watch = new Stopwatch();
-            try
-            {
-                watch.Start();
-                
-
-                return null;
-
-            }
-            catch (Exception ext)
-            {
-                watch.Stop();
-                return null;
-            }
-        }
         #region Procedure change
-
-
         public T CalProcedure(string functinname, object[] item, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
@@ -685,31 +664,28 @@ namespace SQLRepository
             catch (Exception ext)
             {
                 watch.Stop();
-
+                ErrorLogging("CalProcedure", watch.ElapsedMilliseconds, item, ext, caller, lineNumber);
                 return null;
             }
         }
-
-        public IEnumerable<T> CallProcedure(string str)
+        public IEnumerable<T> CallProcedure(string str, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             Stopwatch watch = new Stopwatch();
             try
             {
                 watch.Start();
-
                 var result=_dbSet.FromSql(str);
-
                 watch.Stop();
+                Logging("CallProcedure", watch.ElapsedMilliseconds, lineNumber, caller,str);
                 return result;
             }
             catch (Exception ext)
             {
                 watch.Stop();
+                ErrorLogging("CallProcedure", watch.ElapsedMilliseconds, str, ext, caller, lineNumber); ;
                 return null;
             }
         }
-
-       
         #endregion
 
     }
