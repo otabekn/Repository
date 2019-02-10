@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@ namespace RepositoryRule.CacheRepository
         #region Find
         T Find(string id);
         T FindFirst(string id);
+        T Find(Expression<Func<T, bool>> seletor);
         T FindFirst(string field, string value);
         T FindFirst();
         T FindFirst(Expression<Func<T, bool>> selector);
@@ -25,16 +27,24 @@ namespace RepositoryRule.CacheRepository
         #endregion
         #region Add
         void Add(string id,T model);
-        #endregion 
+        Task AddAsync(string id, T model);
+        void AddRange(List<T> models);
+        Task AddRangeAsync(List<T> models);
+        #endregion
         #region Update
+        Task Update(T model);
+        void Update(List<T>models);
         void Update(string id, T modal);
         #endregion
         #region UpdateAsync
         Task UpdateAsync(T model);
         #endregion
-        #region Remove
-        void Remove(string id);
-        void CatcheDelete(string text, string id,T model);
+        #region Delete
+        void Delete(string id);
+        Task DeleteAsync(string id);
+        void Delete(string text, string id,T model);
+        void DeleteMany(Expression<Func<T, bool>> selector);
+        Task DeleteManyAsync(Expression<Func<T, bool>> expression);
         #endregion
 
 
