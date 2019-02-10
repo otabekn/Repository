@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLRepository", "SQLReposit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CacheRepository", "CacheRepository\CacheRepository\CacheRepository.csproj", "{92161F04-84F7-4553-9421-D02F5E37CE8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoRepository", "MongoRepository\MongoRepository\MongoRepository.csproj", "{A3821A41-EE70-45E8-B7C1-BECDA06A3456}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoRepository", "MongoRepository\MongoRepository\MongoRepository.csproj", "{A3821A41-EE70-45E8-B7C1-BECDA06A3456}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityRepository", "EntityRepository\EntityRepository.csproj", "{D8E4233B-A45E-4669-BC26-8E54771DACE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{A3821A41-EE70-45E8-B7C1-BECDA06A3456}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3821A41-EE70-45E8-B7C1-BECDA06A3456}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3821A41-EE70-45E8-B7C1-BECDA06A3456}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8E4233B-A45E-4669-BC26-8E54771DACE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8E4233B-A45E-4669-BC26-8E54771DACE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8E4233B-A45E-4669-BC26-8E54771DACE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8E4233B-A45E-4669-BC26-8E54771DACE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

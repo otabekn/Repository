@@ -146,7 +146,7 @@ namespace MongoRepository
         public long Count(Expression<Func<T, bool>> expression) => _data.Count(expression);
         public long Count(string field, string value)
         {
-            var ss=_data.Distinct(name => name.Id == "").;
+            var ss=_data.Distinct(name => name.Id == "");
             var document = new BsonDocument(field, value);
             return _data.Count(filter: document);
         }

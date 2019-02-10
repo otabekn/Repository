@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using CacheManager.Core;
 using RepositoryRule.CacheRepository;
 
@@ -38,14 +40,49 @@ namespace CacheRepository
             return _cache.Get(id);
         }
 
+        public Task<T> FindAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
+
         public T FindFirst(string id)
         {
             return _cache.Get(id);
         }
 
+        public T FindFirst(string field, string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T FindFirst()
+        {
+            throw new NotImplementedException();
+        }
+
+        public T FindFirst(Expression<Func<T, bool>> selector)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<T> FindFirstAsync(string id)
         {
             return _cache.Get(id);
+        }
+
+        public Task<T> FindFirstAsync(string field, string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> FindFirstAsync(Expression<Func<T, bool>> selector)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> FirstAsync()
+        {
+            throw new NotImplementedException();
         }
 
         public void Remove(string id)
@@ -57,6 +94,11 @@ namespace CacheRepository
         {
             Remove(id);
             Add(id, modal);
+        }
+
+        public Task UpdateAsync(T model)
+        {
+            throw new NotImplementedException();
         }
     }
 }

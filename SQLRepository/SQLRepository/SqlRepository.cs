@@ -18,7 +18,7 @@ namespace SQLRepository
 
     
     //change
-    public partial class SqlRepository<T>: IEntityRepository<T>
+    public  class SqlRepository<T>: IEntityRepository<T>
         where T:class, IEntity<int>
     {
         #region Head
@@ -685,6 +685,16 @@ namespace SQLRepository
                 ErrorLogging("CallProcedure", watch.ElapsedMilliseconds, str, ext, caller, lineNumber); ;
                 return null;
             }
+        }
+
+        public T GetFirst(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> GetFirstAsync(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
