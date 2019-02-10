@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using CacheManager.Core;
+
 using RepositoryRule.CacheRepository;
 
 namespace CacheRepository
@@ -11,17 +12,33 @@ namespace CacheRepository
         where T : class
     {
         string name;
-        ICacheManager<T> _cache;
+
         CacheRepository()
         {
             name= typeof(T).Name;
         }
-        
+        #region Add
         public void Add(string id, T model)
         {
-            Task.Run(() => { _cache.Add(id, model); });
+            Task.Run(() => {  });
         }
 
+        public Task AddAsync(string id, T model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddRange(List<T> models)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddRangeAsync(List<T> models)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+        #region Delete
         public void CacheDelete(string text, T model)
         {
             _cache.Get<T>("dfdf","dfd");
@@ -35,9 +52,40 @@ namespace CacheRepository
             });
         }
 
+        public void Delete(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(string text, string id, T model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteMany(Expression<Func<T, bool>> selector)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteManyAsync(Expression<Func<T, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+        #region Find
         public T Find(string id)
         {
             return _cache.Get(id);
+        }
+
+        public T Find(Expression<Func<T, bool>> seletor)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<T> FindAsync(string id)
@@ -67,7 +115,7 @@ namespace CacheRepository
 
         public async Task<T> FindFirstAsync(string id)
         {
-            return _cache.Get(id);
+            
         }
 
         public Task<T> FindFirstAsync(string field, string value)
@@ -84,21 +132,35 @@ namespace CacheRepository
         {
             throw new NotImplementedException();
         }
+        #endregion
 
-        public void Remove(string id)
-        {
-            Task.Run(() => { _cache.Remove(id); });
-        }
+        #region Update
 
         public void Update(string id, T modal)
         {
-            Remove(id);
+            Delete(id);
             Add(id, modal);
+        }
+
+        public void Update(Expression<Func<T, T>> selector)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Update(T model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(List<T> models)
+        {
+            throw new NotImplementedException();
         }
 
         public Task UpdateAsync(T model)
         {
             throw new NotImplementedException();
         }
+        #endregion
     }
 }

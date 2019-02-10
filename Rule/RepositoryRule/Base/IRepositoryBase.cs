@@ -30,8 +30,8 @@ namespace RepositoryRule.Base
         Task UpdateAsync(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
         void UpdateMany(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
         Task UpdateManyAsync(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
-        void Update(Expression<Func<T, T>>selector,  [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
-        Task UpdateAsync(Expression<Func<T, T>> selector,  [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
+      //  void Update(Expression<Func<T, T>>selector,  [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
+        //Task UpdateAsync(Expression<Func<T, T>> selector,  [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
 
         #endregion
 
@@ -68,6 +68,7 @@ namespace RepositoryRule.Base
         #region
         T CalProcedure(string functinname, object[] item, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
         IEnumerable<T> CallProcedure(string str, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
+        Task<IEnumerable<T>> CallProcedure(string str);
         #endregion
 
 

@@ -11,6 +11,10 @@ using RepositoryRule.LoggerRepository;
 using System.Collections.Generic;
 using MongoDB.Bson;
 using RepositoryRule.CacheRepository;
+using MongoDB.Driver.Core.Operations;
+using MongoDB.Driver.Core.Bindings;
+using System.Threading;
+using MongoDB.Bson.Serialization;
 
 namespace MongoRepository
 {
@@ -28,18 +32,9 @@ namespace MongoRepository
         {
             _database= database.Database;
             name=typeof(T).Name;
-            
             _db = _database.GetCollection<T>(name);
         }
-        public MongoRepository(IMongoContext context, ILoggerRepository logger):this(context)
-        {
-            _logger = logger;
-        }
-        public MongoRepository(IMongoContext context, ILoggerRepository logger, IChacheRepository<T> cache):this(context, logger)
-        {
-            _cache = cache;
-        }
-        public MongoRepository(IMongoContext context, IChacheRepository<T> cache) : this(context)
+        public MongoRepository(IMongoContext context, IChacheRepository<T> cache):this(context)
         {
             _cache = cache;
         }
@@ -54,19 +49,19 @@ namespace MongoRepository
 
         public Task AddAsync(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
-            _cache.AddAsync(model.Id, model);
+            _cache?.AddAsync(model.Id, model);
              _db.InsertOneAsync(model);
             return Task.CompletedTask;
         }
         public void AddRange(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
-            _cache.AddRange(models);
+            _cache?.AddRange(models);
             _db.InsertMany(models);
         }
 
         public Task AddRangeAsync(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
-            _cache.AddRangeAsync(models);
+            _cache?.AddRangeAsync(models);
             _db.InsertManyAsync(models);
             return Task.CompletedTask;
 
@@ -94,48 +89,20 @@ namespace MongoRepository
         }
         public Task DeleteManyAsync(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
-            _cache.DeleteManyAsync(selector);
-            _cache.DeleteMany(selector);
+            _cache?.DeleteManyAsync(selector);
+            _db.DeleteMany(selector);
             return Task.CompletedTask;
         }
         
         #endregion
         
+
         #region Find
 
         public IEnumerable<T> Find(Expression<Func<T, bool>> keySelector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
-            try
-            {
-
-                return _db.Find(keySelector).ToEnumerable<T>();
-            }
-            catch(Exception ext)
-            {
-                return null;
-            }
+            return _db.Find(keySelector).ToEnumerable<T>();
         }
-
-        public T FindFirst(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
-        {
-           var result= _cache?.Find(selector);
-            if (result != null)
-            {
-                return result;
-            }
-            return _db.Find(selector).FirstOrDefault();
-        }
-        public async Task<T> FindFirstAsync(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
-        {
-            var result = _cache?.Find(selector);
-            if (result != null)
-            {
-                return result;
-            }
-            return _db.Find(selector).FirstOrDefault();
-
-        }
-
         public IEnumerable<T> Find(Expression<Func<T, bool>> selector, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
          {
            return _db.Find(selector).Skip(offset).Limit(limit).ToEnumerable();
@@ -144,7 +111,7 @@ namespace MongoRepository
         {
                 var document = new BsonDocument(field, value);
                 return _db.Find(document).ToEnumerable();
-         }
+        }
         public IEnumerable<T> Find(string field, string value, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
                 var document = new BsonDocument(field, value);
@@ -160,9 +127,7 @@ namespace MongoRepository
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             return _db.Find(selector).ToList();
-        }
-
-       
+        }     
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> selector, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
@@ -184,7 +149,6 @@ namespace MongoRepository
         #endregion
         
         #region Get
-
         public T Get(string id, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             var result = _cache?.Find(id);
@@ -204,12 +168,31 @@ namespace MongoRepository
             }
             return _db.Find(m => m.Id == id).FirstOrDefault();
         }
+        public T GetFirst(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            var result = _cache?.Find(selector);
+            if (result != null)
+            {
+                return result;
+            }
+            return _db.Find(selector).FirstOrDefault();
+        }
+
+        public async Task<T> GetFirstAsync(Expression<Func<T, bool>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            var result = _cache?.Find(selector);
+            if (result != null)
+            {
+                return result;
+            }
+            return _db.Find(selector).FirstOrDefault();
+        }
         #endregion
-        
+
         #region Update
         public void UpdateMany(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
-            _cache.Update(models);
+            _cache?.Update(models);
             foreach(var i in models)
             {
                 _db.FindOneAndReplace(m => m.Id == i.Id, i);
@@ -218,35 +201,14 @@ namespace MongoRepository
 
         public  Task UpdateManyAsync(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
-            _cache.Update(models);
+            _cache?.Update(models);
             foreach (var i in models)
             {
                 _db.FindOneAndReplace(m => m.Id == i.Id, i);
             }
             return Task.CompletedTask;
         }
-        /// <summary>
-        /// TODO :Not Relise
-        /// </summary>
-        /// <param name="selector"></param>
-        /// <param name="lineNumber"></param>
-        /// <param name="caller"></param>
-        public void Update(Expression<Func<T, T>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
-        {
-           // _db.UpdateMany(selector);
-        }
-        /// <summary>
-        /// TODO :not Relise
-        /// </summary>
-        /// <param name="selector"></param>
-        /// <param name="lineNumber"></param>
-        /// <param name="caller"></param>
-        /// <returns></returns>
-        public Task UpdateAsync(Expression<Func<T, T>> selector, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
-        {
-            return Task.CompletedTask;
-        }
-
+       
         public void Update(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
             _cache?.Update(model);
@@ -260,9 +222,9 @@ namespace MongoRepository
             return Task.CompletedTask;
         }
         #endregion
-        
+
         #region  Count
-        public long Count(Expression<Func<T, bool>> expression) => _data.Count(expression);
+        public long Count(Expression<Func<T, bool>> expression) => _db.Count(expression);
         public long Count(string field, string value)
         {
             var document = new BsonDocument(field, value);
@@ -288,11 +250,38 @@ namespace MongoRepository
         #region Procedure
         public T CalProcedure(string functinname, object[] item, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
-            throw new NotImplementedException();
+            var param = "(";
+            foreach(var i in item)
+            {
+                param += "'" + Convert.ToString(i) + "'";
+            }
+            param += ")";
+            var value= EvalAsync(functinname + param).Result;
+            return BsonSerializer.Deserialize<T>(value.ToJson());
+           
         }
         public IEnumerable<T> CallProcedure(string str, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
-            throw new NotImplementedException();
+           
+            var value = EvalAsync(str).Result;
+            return BsonSerializer.Deserialize<IEnumerable<T>>(value.ToJson());
+
+        }
+
+        public async Task<BsonValue> EvalAsync(string text)
+        {
+            var client = _database as MongoClient;
+
+            if (client == null)
+                throw new ArgumentException("Client is not a MongoClient");
+
+            var function = new BsonJavaScript(text);
+            var op = new EvalOperation(_database.DatabaseNamespace, function, null);
+
+            using (var writeBinding = new WritableServerBinding(client.Cluster, new CoreSessionHandle(NoCoreSession.Instance)))
+            {
+                return await op.ExecuteAsync(writeBinding, CancellationToken.None);
+            }
         }
         #endregion
     }

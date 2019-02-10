@@ -32,6 +32,7 @@ namespace RepositoryRule.CacheRepository
         Task AddRangeAsync(List<T> models);
         #endregion
         #region Update
+        void Update(Expression<Func<T, T>>selector);
         Task Update(T model);
         void Update(List<T>models);
         void Update(string id, T modal);
