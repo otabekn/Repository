@@ -1,7 +1,5 @@
-﻿
-using AspectCore.Configuration;
+﻿using AspectCore.Configuration;
 using AspectCore.Extensions.Autofac;
-using AspectCore.Extensions.DependencyInjection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Examples.Db;
@@ -15,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoRepository.Context;
 using RepositoryRule.LoggerRepository;
+using Serilog;
 using ServiceList;
 using System;
 
@@ -41,7 +40,11 @@ namespace Examples
             });
             //services.AddSingleton<IDataService, DataService>();
             //services.AddSingleton<IMongoContext, MongoContext>();
-           
+
+            var log = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+                //.WriteTo.Stackify()
+                //.CreateLogger();
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             var containerBuilder = new ContainerBuilder();
@@ -52,7 +55,7 @@ namespace Examples
             containerBuilder.RegisterType<MongoContext>().As<IMongoContext>();
 
             containerBuilder.RegisterDynamicProxy(mbox => {
-                mbox.Interceptors.AddTyped<MethodExecuteLoggerInterceptor>(args: new object[] { new SeilogLogger() });
+                mbox.Interceptors.AddTyped<MethodExecuteLoggerInterceptor>(args: new object[] { new SeilogLogger(log) });
             });
             this.ApplicationContainer = containerBuilder.Build();
             return new AutofacServiceProvider(this.ApplicationContainer);
