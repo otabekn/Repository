@@ -19,6 +19,7 @@ using MongoDB.Bson.Serialization;
 namespace MongoRepository
 {
     //change
+  
     public class MongoRepository<T> : IMongoRepository<T>
         where T : class, IEntity<string>
     {
@@ -282,6 +283,11 @@ namespace MongoRepository
             {
                 return await op.ExecuteAsync(writeBinding, CancellationToken.None);
             }
+        }
+
+        public Task<IEnumerable<T>> CallProcedure(string str)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Entity\Entity.csproj" />
+    <ProjectReference Include="..\LoggingRepository\LoggingRepository.csproj" />
+    <ProjectReference Include="..\MongoRepository\MongoRepository\MongoRepository.csproj" />
+    <ProjectReference Include="..\Rule\RepositoryRule\RepositoryRule.csproj" />
+  </ItemGroup>
+
+</Project>

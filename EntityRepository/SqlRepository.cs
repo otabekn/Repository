@@ -41,8 +41,8 @@ namespace EntityRepository
         }
         public async Task AddAsync(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {
-            _cache?.Add(model.Id.ToString(), model);
-            await _dbSet.AddAsync(model);
+           _cache?.Add(model.Id.ToString(), model);
+           await _dbSet.AddAsync(model);
            await _db.SaveChangesAsync();
         }
         public void AddRange(List<T> models, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
