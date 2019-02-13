@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MongoRepository.Context;
 using RepositoryRule.LoggerRepository;
 using Serilog;
@@ -41,7 +42,8 @@ namespace Examples
             //services.AddSingleton<IDataService, DataService>();
             //services.AddSingleton<IMongoContext, MongoContext>();
 
-            var log = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+            var log = new LoggerConfiguration().WriteTo.Seq("http://localhost:5341").WriteTo.Console()
+            .CreateLogger();
                 //.WriteTo.Stackify()
                 //.CreateLogger();
 
@@ -49,13 +51,11 @@ namespace Examples
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             var containerBuilder = new ContainerBuilder();
             containerBuilder.Populate(services);
-
             containerBuilder.RegisterType<DataService>().As<IDataService>();
             containerBuilder.RegisterType<SeilogLogger>().As<ILoggerRepository>();
             containerBuilder.RegisterType<MongoContext>().As<IMongoContext>();
-
             containerBuilder.RegisterDynamicProxy(mbox => {
-                mbox.Interceptors.AddTyped<MethodExecuteLoggerInterceptor>(args: new object[] { new SeilogLogger(log) });
+                mbox.Interceptors.AddTyped<MethodExecuteLoggerInterceptor>(args: new object[] {log});
             });
             this.ApplicationContainer = containerBuilder.Build();
             return new AutofacServiceProvider(this.ApplicationContainer);
@@ -64,7 +64,7 @@ namespace Examples
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {

@@ -43,7 +43,7 @@ namespace RepositoryRule.CacheRepository
         #region Delete
         void Delete(string id);
         Task DeleteAsync(string id);
-        void Delete(string text, string id,T model);
+       // void Delete(string text, string id,T model);
         void DeleteMany(Expression<Func<T, bool>> selector);
         Task DeleteManyAsync(Expression<Func<T, bool>> expression);
         #endregion

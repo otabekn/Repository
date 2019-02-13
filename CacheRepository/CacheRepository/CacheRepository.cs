@@ -2,85 +2,103 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-
+using EasyCaching.Core;
 using RepositoryRule.CacheRepository;
 
 namespace CacheRepository
 {
-    //change
+    public static class CacheConfig
+    {
+        public static Dictionary<string, TimeSpan> Entitys { get; set; }
+    }
+
     public class CacheRepository<T> : IChacheRepository<T>
         where T : class
     {
         string name;
-
-        CacheRepository()
+        TimeSpan _time;
+        private readonly IEasyCachingProvider _provider;
+        CacheRepository(IEasyCachingProvider provider)
         {
             name= typeof(T).Name;
+            _provider = provider;
         }
         #region Add
         public void Add(string id, T model)
         {
-            Task.Run(() => {  });
+            _provider.Set(id, model,_time);
         }
-
         public Task AddAsync(string id, T model)
         {
-            throw new NotImplementedException();
+            _provider.SetAsync(id, model, _time);
+            return Task.CompletedTask;
         }
 
         public void AddRange(List<T> models)
         {
-            throw new NotImplementedException();
+            foreach(var i in models)
+            {
+                var f= i.GetType().GetProperty("Id");
+                _provider.Set(Convert.ToString(f.GetConstantValue()), i, _time);
+            }
         }
 
         public Task AddRangeAsync(List<T> models)
         {
-            throw new NotImplementedException();
+            return Task.Run(() =>
+            {
+                foreach (var i in models)
+                {
+                    var f = i.GetType().GetProperty("Id");
+                    _provider.Set(Convert.ToString(f.GetConstantValue()), i, _time);
+                }
+            });
         }
         #endregion
         #region Delete
-        public void CacheDelete(string text, T model)
-        {
-            _cache.Get<T>("dfdf","dfd");
+        //public void CacheDelete(string id, T model)
+        //{
+        //    _provider.Remove(id);
             
-        }
+        //}
 
-        public void CatcheDelete(string text, string id, T model)
-        {
-            Task.Run(() => {
-                _cache.Remove(id);
-            });
-        }
+        //public void CatcheDelete(string text, string id, T model)
+        //{
+            
+        //}
 
         public void Delete(string id)
         {
-            throw new NotImplementedException();
+            _provider.Remove(id);
         }
 
-        public void Delete(string text, string id, T model)
-        {
-            throw new NotImplementedException();
-        }
+        //public void Delete(string text, string id, T model)
+        //{
+        //    _provider
+        //}
 
         public Task DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            _provider.Remove(id);
+            return Task.CompletedTask;
         }
-
+        //change
         public void DeleteMany(Expression<Func<T, bool>> selector)
         {
-            throw new NotImplementedException();
+            //_provider.Get()
         }
-
+        //change
         public Task DeleteManyAsync(Expression<Func<T, bool>> expression)
         {
             throw new NotImplementedException();
         }
         #endregion
+
         #region Find
         public T Find(string id)
         {
-            return _cache.Get(id);
+            _provider.
+        //    return _cache.Get(id);
         }
 
         public T Find(Expression<Func<T, bool>> seletor)
