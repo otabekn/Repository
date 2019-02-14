@@ -1,26 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Examples.Models;
 using ServiceList;
 using MongoDB.Bson;
-using Serilog;
+
+using Entity;
+using GenericControllera;
 
 namespace Examples.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : GenericController<Data, string>
     {
         IDataService _data;
-        public HomeController(IDataService data) {
+        public HomeController(IDataService data):base(data) {
             _data = data;
         }
         public IActionResult Index()
         {
             _data.Add(new Entity.Data() { Id = ObjectId.GenerateNewId().ToString(), Name = "sd" });
-            return View();
+            return Ok();
         }
 
         public IActionResult Privacy()

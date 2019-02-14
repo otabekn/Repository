@@ -97,58 +97,74 @@ namespace CacheRepository
         #region Find
         public T Find(string id)
         {
-            _provider.
-        //    return _cache.Get(id);
+            var a= _provider.Get<T>(id);
+            if (!a.IsNull) {
+                return a.Value;
+            }
+            return null;
         }
-
+        //change
         public T Find(Expression<Func<T, bool>> seletor)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
-        public Task<T> FindAsync(string id)
+        public async Task<T> FindAsync(string id)
         {
-            throw new NotImplementedException();
+           var result= await _provider.GetAsync<T>(id);
+            if (!result.IsNull)
+            {
+                return result.Value;
+            }
+            return null;
         }
 
         public T FindFirst(string id)
         {
-            return _cache.Get(id);
+           var result= _provider.Get<T>(id);
+            if (!result.IsNull) return result.Value;
+            return null;
         }
-
+        //change
         public T FindFirst(string field, string value)
         {
-            throw new NotImplementedException();
+            return null;
         }
-
+        //change
         public T FindFirst()
         {
-            throw new NotImplementedException();
+            return null;
         }
-
+        //change
         public T FindFirst(Expression<Func<T, bool>> selector)
         {
-            throw new NotImplementedException();
+            return null;
+            //throw new NotImplementedException();
         }
 
         public async Task<T> FindFirstAsync(string id)
         {
-            
+            var result=_provider.Get<T>(id);
+            if (result.HasValue) return result.Value;
+            return null;
         }
-
+        //change
         public Task<T> FindFirstAsync(string field, string value)
         {
-            throw new NotImplementedException();
+            return null;
+            //throw new NotImplementedException();
         }
-
+        //not Emplement
         public Task<T> FindFirstAsync(Expression<Func<T, bool>> selector)
         {
-            throw new NotImplementedException();
+            return null;
+            //_provider.Get<T>("", _time);
+            
         }
-
+        //change
         public Task<T> FirstAsync()
         {
-            throw new NotImplementedException();
+            return null;
         }
         #endregion
 
