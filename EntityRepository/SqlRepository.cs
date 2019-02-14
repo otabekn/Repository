@@ -1,5 +1,6 @@
 ﻿using EntityRepository.Context;
 using Microsoft.EntityFrameworkCore;
+using RepositoryRule.Base;
 using RepositoryRule.CacheRepository;
 using RepositoryRule.Entity;
 using System;
@@ -263,6 +264,41 @@ namespace EntityRepository
         {
             var result =  _dbSet.FromSql(str);
             return result;
+        }
+
+        public T Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> FindAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void FindReverse(int offset, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> FindReverse(string key1, string value, int offset, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<T> IRepositoryBase<T, int>.FindReverse(int offset, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> FindReverseAsync(int offset, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> FindReverseAsync(string key, string value, int offset, int limit)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

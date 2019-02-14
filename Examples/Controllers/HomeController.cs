@@ -5,14 +5,15 @@ using ServiceList;
 using MongoDB.Bson;
 
 using Entity;
-using GenericControllera;
+
 
 namespace Examples.Controllers
 {
-    public class HomeController : GenericController<Data, string>
+    public class HomeController:ControllerBase //:// GenericController<Data, string>
     {
         IDataService _data;
-        public HomeController(IDataService data):base(data) {
+        public HomeController(IDataService data)//:base(data)
+        {
             _data = data;
         }
         public IActionResult Index()
@@ -23,13 +24,13 @@ namespace Examples.Controllers
 
         public IActionResult Privacy()
         {
-            return View();
+            return Ok();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return Ok();
         }
     }
 }

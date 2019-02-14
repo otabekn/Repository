@@ -285,7 +285,45 @@ namespace MongoRepository
             }
         }
 
-        public Task<IEnumerable<T>> CallProcedure(string str)
+        public  async Task<IEnumerable<T>> CallProcedure(string str)
+        {
+                var result= await   EvalAsync(str);
+            return BsonSerializer.Deserialize<IEnumerable<T>>(result.ToJson());
+        }
+
+        public T Delete(string id)
+        {
+           var element= _db.FindOneAndDelete(mbox => mbox.Id == id);
+            return element;
+        }
+
+        public IEnumerable<T> FindAll()
+        {
+            return _db.Find(m=>true).ToList();
+        }
+
+        public IEnumerable<T> FindReverse(int offset, int limit)
+        {
+
+            return _db.Find(m => true).Sort(SortDescender()).Skip(offset).Limit(limit).ToList();
+
+        }
+        public SortDefinition<T> SortDescender(string id="_id") {
+            return Builders<T>.Sort.Descending(id);
+        }
+        public IEnumerable<T> FindReverse(string key, string value, int  offset, int limit)
+        {
+            if (string.IsNullOrEmpty(key)) return null;
+            var selector = new BsonDocument(key, value);
+           return  _db.Find(selector).Sort(SortDescender()).Skip(offset).Limit(limit).ToList();
+
+        }
+        public  async Task<IEnumerable<T>> FindReverseAsync(string key, string value, int offset, int limit)
+        {
+            return FindReverse(key, value, offset, limit);
+        }
+
+        public Task<IEnumerable<T>> FindReverseAsync(int offset, int limit)
         {
             throw new NotImplementedException();
         }

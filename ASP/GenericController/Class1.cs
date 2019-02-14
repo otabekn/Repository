@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RepositoryRule.Base;
 using RepositoryRule.Entity;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace GenericControllera
+namespace GenericControllers
 {
-    public class GenericController<T, TKey>:ControllerBase
+    public class GenericController<T, TKey> : ControllerBase
          where T : class, IEntity<TKey>
     {
         private IRepositoryBase<T, TKey> _item;
@@ -24,18 +24,24 @@ namespace GenericControllera
         {
             return _item.Get(id);
         }
-        public virtual IEnumerable<T> GetBy([FromBody]Query model) {
-            return null;
+        public virtual async Task<IEnumerable<T>> GetBy([FromBody]Query model)
+        {
+            if (model == null) return null;
+            if (string.IsNullOrEmpty(model.key))
+            {
+                _item.FindReverse(model.offset, model.limit);
+            }
+            return await _item.FindReverseAsync(model.key, model.value, model.offset, model.limit);
+            
         }
         public virtual TKey Put([FromBody]T model)
         {
-            
             _item.Add(model);
             return model.Id;
         }
-        public virtual bool Delete(TKey id)
+        public virtual T Delete(TKey id)
         {
-            return _item.Delete(id);
+          return  _item.Delete(id);
         }
     }
     public class Query

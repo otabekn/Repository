@@ -16,6 +16,7 @@ namespace RepositoryRule.Base
         Task<T> GetAsync(TKey id, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
         T GetFirst(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
         Task<T> GetFirstAsync(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
+        
         #endregion
 
         #region Add
@@ -36,7 +37,7 @@ namespace RepositoryRule.Base
         #endregion
 
         #region Delate
-        bool Delete(TKey id);
+        T Delete(TKey id);
         void Delate(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
         Task DelateAsync(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
         void DeleteMany(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
@@ -72,7 +73,12 @@ namespace RepositoryRule.Base
         Task<IEnumerable<T>> CallProcedure(string str);
         #endregion
 
-
+        #region New
+        IEnumerable<T> FindReverse(int offset, int limit);
+        Task<IEnumerable<T>> FindReverseAsync(int offset, int limit);
+        IEnumerable<T> FindReverse(string key, string value, int offset, int limit);
+        Task<IEnumerable<T>> FindReverseAsync(string key, string value, int offset, int limit);
+        #endregion
 
 
     }

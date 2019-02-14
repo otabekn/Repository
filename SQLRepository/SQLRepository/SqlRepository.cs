@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RepositoryRule.Base;
 using RepositoryRule.CacheRepository;
 using RepositoryRule.Entity;
 using RepositoryRule.LoggerRepository;
@@ -60,7 +61,7 @@ namespace SQLRepository
             }
             catch(Exception ext)
             {
-                _cache?.CatcheDelete("Add Exeptions",model.Id.ToString(), model);
+               // _cache?.CatcheDelete("Add Exeptions",model.Id.ToString(), model);
                 watch.Stop();
                 ErrorLogging("Add Error", watch.ElapsedMilliseconds, model, ext, caller, lineNumber);
             }                        
@@ -298,7 +299,7 @@ namespace SQLRepository
             try
             {
                 watch.Start();
-                _cache?.Remove( model.Id.ToString());
+               // _cache?.Remove( model.Id.ToString());
                  _dbSet.Remove(model);
                 watch.Stop();
                 Logging("Delete", watch.ElapsedMilliseconds, lineNumber, caller, model);
@@ -316,7 +317,7 @@ namespace SQLRepository
             {
                 watch.Start();
                 _dbSet.Remove(model);
-                _cache?.Remove(model.Id.ToString());
+               // _cache?.Remove(model.Id.ToString());
                 await _db.SaveChangesAsync();
                 watch.Stop();
 
@@ -693,6 +694,46 @@ namespace SQLRepository
         }
 
         public Task<T> GetFirstAsync(Expression<Func<T, bool>> expression, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> FindAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> CallProcedure(string str)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void FindReverse(int offset, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> FindReverse(string key1, string value, int offset, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<T> IRepositoryBase<T, int>.FindReverse(int offset, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> FindReverseAsync(int offset, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> FindReverseAsync(string key, string value, int offset, int limit)
         {
             throw new NotImplementedException();
         }
