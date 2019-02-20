@@ -1,14 +1,20 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Examples.Models;
+
 using ServiceList;
 using MongoDB.Bson;
-
 using Entity;
-
 
 namespace Examples.Controllers
 {
+    public class ValuesController : GenericControllers.GenericController<Data,string>
+    {
+
+        public ValuesController(IDataService data) :base(data)
+        {
+            
+        }
+    }
     public class HomeController:ControllerBase //:// GenericController<Data, string>
     {
         IDataService _data;

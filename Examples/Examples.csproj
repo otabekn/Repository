@@ -21,6 +21,7 @@
 
 
   <ItemGroup>
+    <ProjectReference Include="..\ASP\GenericController\GenericController.csproj" />
     <ProjectReference Include="..\LoggingRepository\LoggingRepository.csproj" />
     <ProjectReference Include="..\MongoRepository\MongoRepository\MongoRepository.csproj" />
     <ProjectReference Include="..\ServiceList\ServiceList.csproj" />
