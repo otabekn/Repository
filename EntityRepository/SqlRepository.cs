@@ -13,6 +13,10 @@ using Z.EntityFramework.Plus;
 
 namespace EntityRepository
 {
+    //https://github.com/mirjahongirbek/Repository
+    // I am not use Logging because I am use Aop Prinsip in this case 
+    // please follow https://github.com/dotnetcore/AspectCore-Framework/blob/master/docs/injector.md#aspectcore中的ioc容器和依赖注入 
+    //this repository for reading more
     public class SqlRepository<T> : IEntityRepository<T>
          where T : class, IEntity<int>
     {
@@ -301,5 +305,7 @@ namespace EntityRepository
             throw new NotImplementedException();
         }
         #endregion
+              
     }
+  
 }
