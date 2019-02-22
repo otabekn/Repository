@@ -245,7 +245,7 @@ namespace RepositoryRule.Base
         /// <returns></returns>
         Task<IEnumerable<T>> FindAsync(string field, string value, int offset, int limit, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null);
         #endregion
-
+        //Get count from database
         #region Count
         /// <summary>
         /// 
@@ -333,7 +333,9 @@ namespace RepositoryRule.Base
         /// <returns></returns>
         Task<IEnumerable<T>> FindReverseAsync(string key, string value, int offset, int limit);
         #endregion
-
+    }
+    public interface GroupGase
+    {
 
     }
 }
