@@ -9,10 +9,10 @@ using Entity;
 
 namespace Examples.Controllers
 {
-    public class HomeController:ControllerBase //:// GenericController<Data, string>
+    public class HomeController:GenericControllers.GenericController<Data, string> //:// GenericController<Data, string>
     {
         IDataService _data;
-        public HomeController(IDataService data)//:base(data)
+        public HomeController(IDataService data):base(data)
         {
             _data = data;
         }

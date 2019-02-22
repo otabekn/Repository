@@ -25,7 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceList", "ServiceList\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ASP", "ASP", "{CAA1B6B4-19D7-4F2A-B037-9B116CDF8957}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericController", "ASP\GenericController\GenericController.csproj", "{23AA3441-A194-44F7-8C05-3EFB827D6983}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericController", "ASP\GenericController\GenericController.csproj", "{23AA3441-A194-44F7-8C05-3EFB827D6983}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevenDbExample", "RevenDbExample\RevenDbExample.csproj", "{8E44A8E7-1B8B-4DA8-A243-9DF5E9C36EB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +75,10 @@ Global
 		{23AA3441-A194-44F7-8C05-3EFB827D6983}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23AA3441-A194-44F7-8C05-3EFB827D6983}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23AA3441-A194-44F7-8C05-3EFB827D6983}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E44A8E7-1B8B-4DA8-A243-9DF5E9C36EB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E44A8E7-1B8B-4DA8-A243-9DF5E9C36EB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E44A8E7-1B8B-4DA8-A243-9DF5E9C36EB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E44A8E7-1B8B-4DA8-A243-9DF5E9C36EB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +88,7 @@ Global
 		{FDB36009-5854-4265-9105-A4343ECE7EDE} = {BE5D45F4-6A1B-45C1-820C-0ECA338F14BF}
 		{7BE21301-DF87-4D00-B214-F7999C4D6F46} = {BE5D45F4-6A1B-45C1-820C-0ECA338F14BF}
 		{23AA3441-A194-44F7-8C05-3EFB827D6983} = {CAA1B6B4-19D7-4F2A-B037-9B116CDF8957}
+		{8E44A8E7-1B8B-4DA8-A243-9DF5E9C36EB5} = {BE5D45F4-6A1B-45C1-820C-0ECA338F14BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5856CBE3-69F0-47C1-B709-0FA9D1B8771B}
