@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryRule.CacheRepository
 {
-    public interface IChacheRepository<T>
+    public interface ICacheRepository<T>
         where T:class
     {
         #region Find

@@ -42,7 +42,8 @@ namespace EntityRepository
         public void Add(T model, [CallerLineNumber]int lineNumber = 0, [CallerMemberName] string caller = null)
         {
                  _cache?.Add(name + model.Id.ToString(), model);
-                _dbSet.Add(model);                
+                _dbSet.Add(model);
+            _db.SaveChanges();
         }
         public async Task AddAsync(T model, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null)
         {

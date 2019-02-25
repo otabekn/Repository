@@ -22,12 +22,12 @@ namespace RevenDbExample
                 store.Initialize();                 // Each DocumentStore needs to be initialized before use.
                 using (IDocumentSession session = store.OpenSession())  // Open a session for a default 'Database'
                 {
-                    var result = session.Query<Product>().Where(mbox => mbox.UnitsInStock == 10).ToList() ;
+                    var result = session.Query<Product>().Where(mbox => mbox.UnitsInStock == 10).ToList();
                     Console.WriteLine(result[0].Name);
                     return;
                     Category category = new Category
                     {
-                     Id= Guid.NewGuid().ToString(),                     
+                        Id = Guid.NewGuid().ToString(),
                         Name = "Database Category"
                     };
 
@@ -36,7 +36,7 @@ namespace RevenDbExample
 
                     Product product = new Product
                     {
-                        Id= Guid.NewGuid().ToString(),
+                        Id = Guid.NewGuid().ToString(),
                         Name = "RavenDB Database",
                         Category = category.Id,
                         UnitsInStock = 10
