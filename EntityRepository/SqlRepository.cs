@@ -21,7 +21,7 @@ namespace EntityRepository
          where T : class, IEntity<int>
     {
         #region Head
-        IChacheRepository<T> _cache;
+        ICacheRepository<T> _cache;
         protected DbContext _db;
         protected DbSet<T> _dbSet;
         private string name;
@@ -32,7 +32,7 @@ namespace EntityRepository
             name = typeof(T).Name;
 
         }
-        public SqlRepository(IDataContext context,IChacheRepository<T> cache) : this(context)
+        public SqlRepository(IDataContext context,ICacheRepository<T> cache) : this(context)
         {
             _cache = cache;
         }
