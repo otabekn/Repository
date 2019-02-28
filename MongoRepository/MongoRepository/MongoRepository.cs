@@ -27,7 +27,7 @@ namespace MongoRepository
         IMongoCollection<T> _db;
         protected IMongoDatabase _database;
         ILoggerRepository _logger;
-        IChacheRepository<T> _cache;
+        ICacheRepository<T> _cache;
         string name;
         public MongoRepository(IMongoContext database)
         {
@@ -35,7 +35,7 @@ namespace MongoRepository
             name=typeof(T).Name;
             _db = _database.GetCollection<T>(name);
         }
-        public MongoRepository(IMongoContext context, IChacheRepository<T> cache):this(context)
+        public MongoRepository(IMongoContext context, ICacheRepository<T> cache):this(context)
         {
             _cache = cache;
         }

@@ -35,9 +35,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CockroachDb", "CockroachDb\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RabbitMq", "RabbitMq", "{DB636399-6E4D-4CF8-9356-3D5D0C8EDC95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityExample", "EntityExample\EntityExample.csproj", "{B9A0925B-1656-473E-8EEA-01F1B6939F55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityExample", "EntityExample\EntityExample.csproj", "{B9A0925B-1656-473E-8EEA-01F1B6939F55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RavenRepository", "RavenRepository\RavenRepository.csproj", "{09E16AAF-69C6-4A73-8A43-63AA816EA91B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RavenRepository", "RavenRepository\RavenRepository.csproj", "{09E16AAF-69C6-4A73-8A43-63AA816EA91B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DapperRepository", "DapperRepository\DapperRepository.csproj", "{59F61FD0-9142-4549-8B59-C033C64BEE01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +107,10 @@ Global
 		{09E16AAF-69C6-4A73-8A43-63AA816EA91B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09E16AAF-69C6-4A73-8A43-63AA816EA91B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09E16AAF-69C6-4A73-8A43-63AA816EA91B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59F61FD0-9142-4549-8B59-C033C64BEE01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59F61FD0-9142-4549-8B59-C033C64BEE01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59F61FD0-9142-4549-8B59-C033C64BEE01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59F61FD0-9142-4549-8B59-C033C64BEE01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
